@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Segment, Image, Item, Header, Button } from 'semantic-ui-react';
+import { Segment, Image, Item, Header, Button, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -50,7 +50,10 @@ const EventDetailedHeader = ({
                 <p>
                   Hosted by{' '}
                   <strong>
-                    <Link to={`/profile/${event.hostUid}`} style={{color: 'white'}}>
+                    <Link
+                      to={`/profile/${event.hostUid}`}
+                      style={{ color: 'white' }}
+                    >
                       {event.hostedBy}
                     </Link>
                   </strong>
@@ -62,25 +65,40 @@ const EventDetailedHeader = ({
       </Segment>
 
       <Segment attached='bottom' clearing>
+        {event.cancelled && (
+          <Label
+            size='large'
+            color='red'
+            content='This event has been cancelled'
+          />
+        )}
         {!isHost && (
           <Fragment>
-            {isGoing &&
+            {isGoing && !event.cancelled && (
               <Button onClick={() => cancelGoingToEvent(event)}>
                 Cancel My Place
-              </Button>}
+              </Button>
+            )}
 
-              {!isGoing && authenticated && (
-
-              <Button loading={loading} onClick={() => goingToEvent(event)} color='teal'>
+            {!isGoing && authenticated && !event.cancelled && (
+              <Button
+                loading={loading}
+                onClick={() => goingToEvent(event)}
+                color='teal'
+              >
                 JOIN THIS EVENT
-              </Button>)}
+              </Button>
+            )}
 
-              {!authenticated && (
-
-              <Button loading={loading} onClick={() => openModal('UnauthModal')} color='teal'>
+            {!authenticated && !event.cancelled && (
+              <Button
+                loading={loading}
+                onClick={() => openModal('UnauthModal')}
+                color='teal'
+              >
                 JOIN THIS EVENT
-              </Button>)}
-
+              </Button>
+            )}
           </Fragment>
         )}
 
